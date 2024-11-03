@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import '../assets/OrderScreen.css'; // Import the new styles
-import StickyHeader from './StickyHeader';
+import React, { useState, useEffect } from 'react'
+import '../assets/OrderScreen.css' // Import the new styles
+import StickyHeader from './StickyHeader'
 
 const OrderScreen = () => {
-  const [orders, setOrders] = useState({ preparing: [], ready: [] });
+  const [orders, setOrders] = useState({ preparing: [], ready: [] })
 
   useEffect(() => {
-    const ipcRenderer = window.electron.ipcRenderer;
+    const ipcRenderer = window.electron.ipcRenderer
 
     ipcRenderer.on('order-preparing', (event, orderId) => {
-      setOrders(prevState => ({
+      setOrders((prevState) => ({
         ...prevState,
         preparing: [...prevState.preparing, orderId]
-      }));
-    });
+      }))
+    })
 
     ipcRenderer.on('order-ready', (event, orderId) => {
-      setOrders(prevState => ({
+      setOrders((prevState) => ({
         ...prevState,
-        preparing: prevState.preparing.filter(id => id !== orderId),
+        preparing: prevState.preparing.filter((id) => id !== orderId),
         ready: [...prevState.ready, orderId]
-      }));
-    });
+      }))
+    })
 
     ipcRenderer.on('order-completed', (event, orderId) => {
-      setOrders(prevState => ({
-        preparing: prevState.preparing.filter(id => id !== orderId),
-        ready: prevState.ready.filter(id => id !== orderId)
-      }));
-    });
+      setOrders((prevState) => ({
+        preparing: prevState.preparing.filter((id) => id !== orderId),
+        ready: prevState.ready.filter((id) => id !== orderId)
+      }))
+    })
 
     return () => {
-      ipcRenderer.removeAllListeners('order-preparing');
-      ipcRenderer.removeAllListeners('order-ready');
-      ipcRenderer.removeAllListeners('order-completed');
-    };
-  }, []);
+      ipcRenderer.removeAllListeners('order-preparing')
+      ipcRenderer.removeAllListeners('order-ready')
+      ipcRenderer.removeAllListeners('order-completed')
+    }
+  }, [])
 
   return (
     <>
-      <StickyHeader title="Kitchen Screen" />
+      <StickyHeader title="Orders Screen" />
       <div className="order-container">
         <h1>Order Status</h1>
 
@@ -47,7 +47,7 @@ const OrderScreen = () => {
           <h2>Preparing</h2>
           <ul className="order-list">
             {orders.preparing.length > 0 ? (
-              orders.preparing.map(orderId => <li key={orderId}>Order #{orderId}</li>)
+              orders.preparing.map((orderId) => <li key={orderId}>Order #{orderId}</li>)
             ) : (
               <p className="empty-message">No orders currently being prepared</p>
             )}
@@ -58,7 +58,7 @@ const OrderScreen = () => {
           <h2>Ready</h2>
           <ul className="order-list">
             {orders.ready.length > 0 ? (
-              orders.ready.map(orderId => <li key={orderId}>Order #{orderId}</li>)
+              orders.ready.map((orderId) => <li key={orderId}>Order #{orderId}</li>)
             ) : (
               <p className="empty-message">No orders ready for pickup</p>
             )}
@@ -66,7 +66,7 @@ const OrderScreen = () => {
         </section>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default OrderScreen;
+export default OrderScreen

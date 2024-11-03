@@ -1,4 +1,4 @@
-# mui-project
+# COE42-Project
 
 An Electron application with React
 

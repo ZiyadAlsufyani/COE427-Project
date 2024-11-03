@@ -18,7 +18,7 @@ function createWindow() {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.maximize();
+    mainWindow.maximize()
     mainWindow.show()
   })
 
@@ -35,17 +35,17 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-    // Simulate sending IPC events
-    setInterval(() => {
-      const orderId = Math.floor(Math.random() * 1000);
-      mainWindow.webContents.send('order-preparing', orderId);
-      setTimeout(() => {
-        mainWindow.webContents.send('order-ready', orderId);
-      }, 5000);
-      setTimeout(() => {
-        mainWindow.webContents.send('order-completed', orderId);
-      }, 10000);
-    }, 10000);
+  // Simulate sending IPC events
+  setInterval(() => {
+    const orderId = Math.floor(Math.random() * 1000)
+    mainWindow.webContents.send('order-preparing', orderId)
+    setTimeout(() => {
+      mainWindow.webContents.send('order-ready', orderId)
+    }, 5000)
+    setTimeout(() => {
+      mainWindow.webContents.send('order-completed', orderId)
+    }, 10000)
+  }, 10000)
 }
 
 // This method will be called when Electron has finished
@@ -64,8 +64,6 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-
-  
 
   createWindow()
 

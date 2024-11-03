@@ -1,11 +1,12 @@
 @import './base.css';
 
-body, html {
+body,
+html {
   /* display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column; */
-  
+
   color: black;
   /* overflow: auto; */
   background-image: url('./wavy-lines.svg');

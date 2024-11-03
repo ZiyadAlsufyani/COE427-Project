@@ -1,11 +1,7 @@
-import "../assets/KitchenFooter.css"
+import '../assets/KitchenFooter.css'
 
 const KitchenFooter = () => {
-    return (
-        <footer className='KitchenFooter'>
+  return <footer className="KitchenFooter"></footer>
+}
 
-        </footer>
-    );
-};
-
-export default KitchenFooter;
+export default KitchenFooter
