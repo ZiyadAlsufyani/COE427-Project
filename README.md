@@ -1,4 +1,4 @@
-# COE42-Project
+# COE427-Project
 
 An Electron application with React
 
