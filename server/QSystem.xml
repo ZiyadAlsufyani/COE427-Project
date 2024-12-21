@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/7.3.0/rti_routing_service.xsd" version="7.3.0">
+    <!-- types -->
+    <types>
+      <struct name="Order" extensibility="appendable">
+        <member name="fromDevice" type="string" stringMaxLength="128"/>
+        <member name="toDevice" type="string" stringMaxLength="128"/>
+        <member name="orderNum" type="long" key="true"/>
+        <member name="orderDetails" type="string" stringMaxLength="1024" optional="true"/>
+      </struct>
+    </types>
+
+    <!-- Qos Library -->
+    <qos_library name="QosLibrary">
+      <qos_profile name="DefaultProfile" base_name="BuiltinQosLibExp::Generic.StrictReliable" is_default_qos="true">
+        <domain_participant_qos>
+          <participant_name>
+            <name>Connector Order</name>
+          </participant_name>
+        </domain_participant_qos>
+      </qos_profile>
+    </qos_library>
+
+    <!-- Domain Library -->
+    <domain_library name="MyDomainLibrary">
+      <domain name="MyDomain" domain_id="15">
+        <register_type name="OrderType" type_ref="Order"/>
+        <topic name="Order" register_type_ref="OrderType"/>
+      </domain>
+    </domain_library>
+
+
+    <domain_participant_library name="MonitoringDashboardParticipantLibrary">
+      <domain_participant name="MonitoringDashboardSubParticipant" domain_ref="MyDomainLibrary::MyDomain">
+        <subscriber name="MonitoringDashboardSubscriber">
+          <data_reader name="MonitoringDashboardReader" topic_ref="Order">
+            <content_filter name="MyFilter" kind="builtin.sql">
+              <expression>1=1</expression> <!-- Subscribe to all orders -->
+            </content_filter>
+          </data_reader>
+        </subscriber>
+      </domain_participant>
+    </domain_participant_library>
+
+</dds>

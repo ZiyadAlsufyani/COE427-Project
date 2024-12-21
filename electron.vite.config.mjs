@@ -15,6 +15,9 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    server: { proxy: { 
+      "/api/metrics": "http://localhost:5004" 
+       } }
   }
 })
