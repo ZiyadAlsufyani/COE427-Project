@@ -8,7 +8,6 @@ const orderTracking = new Map();
 
 const metrics = {
   queueLength: 0,
-  averageServiceTime: 0,
   averageWaitTime: 0,
   ordersByStatus: {
     preparing: 0,
@@ -38,8 +37,11 @@ const run = async () => {
 
 function updateMetrics(orderData) {
   const { orderNum, fromDevice, toDevice } = orderData;
+
+  if (toDevice === 'kitchen' || toDevice === 'orderTermination') {
+    return;
+  }
   
-  console.log(orderNum, fromDevice, toDevice);
   // Initialize order tracking if new order
   if (!orderTracking.has(orderNum)) {
     orderTracking.set(orderNum, {
@@ -69,17 +71,15 @@ function updateMetrics(orderData) {
     metrics.ordersByStatus[newStatus]++;
     order.status = newStatus;
   }
+  console.log(order);
 
   // Update queue metrics
-  metrics.queueLength = metrics.ordersByStatus.preparing + metrics.ordersByStatus.ready;
+  metrics.queueLength = metrics.ordersByStatus.preparing;
 
   // Calculate timing metrics for completed orders
   if (newStatus === 'completed') {
-    const waitTime = (order.preparingTime - order.createdTime) / 1000 / 60;
-    const serviceTime = (order.completedTime - order.preparingTime) / 1000 / 60;
-    
+    const waitTime = (order.completedTime - order.preparingTime) / 1000 / 60;
     metrics.averageWaitTime = updateRollingAverage(metrics.averageWaitTime, waitTime);
-    metrics.averageServiceTime = updateRollingAverage(metrics.averageServiceTime, serviceTime);
     
     // Clean up tracking for completed order
     orderTracking.delete(orderNum);
@@ -99,8 +99,15 @@ function updateMetrics(orderData) {
 }
 
 function updateRollingAverage(currentAvg, newValue, weight = 0.1) {
-  if (currentAvg === 0) return newValue;
-  return currentAvg * (1 - weight) + newValue * weight;
+  // Handle first value case
+  if (currentAvg === 0 || currentAvg === undefined) {
+      return newValue;
+  }
+
+  // Apply exponential moving average formula
+  // New average = (1 - α) × old_average + α × new_value
+  // where α is the weight factor between 0 and 1
+  return (1 - weight) * currentAvg + weight * newValue;
 }
 
 app.get('/api/metrics', (req, res) => {
