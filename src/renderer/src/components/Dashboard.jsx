@@ -1,7 +1,7 @@
 import StickyHeader from './StickyHeader';
 import '../assets/Dashboard.css';
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line } from 'recharts';
 
 function Dashboard() {
   const [metrics, setMetrics] = useState(null);
@@ -31,24 +31,44 @@ function Dashboard() {
           <div className="metric-card">
             <h2>Current Queue Length</h2>
             <LineChart width={600} height={300} data={metrics.orderHistory}>
-              <Line type="monotone" dataKey="queueLength" stroke="#8884d8" />
-              <CartesianGrid stroke="#ccc" />
+              <Line
+                type="monotone"
+                dataKey="queueLength"
+                stroke="#8884d8"
+                name="Queue Length"
+                strokeWidth={2}
+              />
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="timestamp" />
               <YAxis />
               <Tooltip />
+              <Legend />
             </LineChart>
           </div>
 
           {/* Order Status Distribution */}
           <div className="metric-card">
             <h2>Orders by Status</h2>
-            <BarChart width={600} height={300} data={[metrics.ordersByStatus]}>
-              <Bar dataKey="preparing" fill="#ffd700" />
-              <Bar dataKey="ready" fill="#82ca9d" />
-              <Bar dataKey="completed" fill="#8884d8" />
-              <XAxis />
+            <BarChart
+              width={600}
+              height={300}
+              data={[
+                {
+                  name: 'Orders',
+                  Preparing: metrics.ordersByStatus.preparing,
+                  Ready: metrics.ordersByStatus.ready,
+                  Completed: metrics.ordersByStatus.completed
+                }
+              ]}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
+              <Legend />
+              <Bar dataKey="Preparing" fill="#ffa726" name="Preparing" />
+              <Bar dataKey="Ready" fill="#66bb6a" name="Ready" />
+              <Bar dataKey="Completed" fill="#42a5f5" name="Completed" />
             </BarChart>
           </div>
         </div>
